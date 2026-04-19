@@ -5,6 +5,8 @@ import { connectDB } from "./db.js";
 import { ok } from "./utils/envelope.js";
 import { notFound } from "./middleware/notFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { clerkMiddleware } from "@clerk/express";
+import { authRouter } from "./routes/auth/auth.route.js";
 
 const mainEntryFunction = async () => {
   await connectDB();
@@ -26,14 +28,15 @@ const mainEntryFunction = async () => {
   // middlewares
   app.use(express.json());
   app.use(morgan("dev"));
-  app.use(express.urlencoded({ extended: true }));
-  app.use(express.static("public"));
+  app.use(clerkMiddleware());
 
   app.get("/health", (req, res) => {
     return res
       .status(200)
       .json(ok({ message: "Server is healthy and running in health route" }));
   });
+
+  app.use("/auth", authRouter);
 
   app.use(notFound);
   app.use(errorHandler);
