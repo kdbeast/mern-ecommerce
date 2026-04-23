@@ -1,6 +1,6 @@
 export type UserRole = "USER" | "ADMIN";
 
-export type User = {
+export type AppUser = {
   _id: string;
   clerkUserId: string;
   name: string;
@@ -13,7 +13,7 @@ export type ApiErrorItem = {
   code?: string;
 };
 
-export type ApiResponse<T> = {
+export type ApiEnvelope<T> = {
   status: "success" | "error";
   data: T | null;
   meta?: Record<string, unknown>;
