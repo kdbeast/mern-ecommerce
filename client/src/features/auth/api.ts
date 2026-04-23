@@ -1,4 +1,4 @@
-import { apiPost } from "@/lib/api";
+import { apiGet, apiPost } from "@/lib/api";
 import type { MeResponse, SyncResponse } from "./types";
 
 export const syncUser = async () => {
@@ -6,5 +6,5 @@ export const syncUser = async () => {
 };
 
 export const getMe = async () => {
-  return apiPost<MeResponse>("/auth/me");
+  return apiGet<MeResponse>("/auth/me");
 };

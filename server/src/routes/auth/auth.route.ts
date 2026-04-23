@@ -53,7 +53,7 @@ authRouter.post(
           ? "ADMIN"
           : existingUser?.role || "USER";
 
-    const newlyCreatedDbUser = await User.findByIdAndUpdate(
+    const newlyCreatedDbUser = await User.findOneAndUpdate(
       { clerkUserId: userId },
       {
         clerkUserId: userId,

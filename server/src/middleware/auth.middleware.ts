@@ -9,6 +9,10 @@ export const requireAuth = (
   _res: Response,
   next: NextFunction,
 ) => {
+  if (req.method === "OPTIONS") {
+    return next();
+  }
+
   const auth = getAuth(req);
   const { userId } = auth;
   if (!userId) {
