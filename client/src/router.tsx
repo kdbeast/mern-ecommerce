@@ -1,11 +1,18 @@
+import OrdersPage from "./pages/admin/Orders";
+import CouponsPage from "./pages/admin/Coupons";
 import { HomePage } from "./pages/customer/Home";
 import { SignUpPage } from "./pages/auth/SignUp";
 import { SignInPage } from "./pages/auth/SignIn";
+import ProductsPage from "./pages/admin/Products";
+import SettingsPage from "./pages/admin/Settings";
 import { createBrowserRouter } from "react-router";
-import { CustomerLayout } from "./components/layout/CustomerLayout";
-import { PublicOnlyLayout } from "./components/auth/PublicOnlyLayout";
-import { ProtectedLayout } from "./components/auth/ProtectedLayout";
+import DashboardPage from "./pages/admin/Dashboard";
 import { ProfilePage } from "./pages/customer/Profile";
+import { AdminLayout } from "./components/layout/AdminLayout";
+import { CustomerLayout } from "./components/layout/CustomerLayout";
+import { ProtectedLayout } from "./components/auth/ProtectedLayout";
+import { RoleGuardLayout } from "./components/auth/RoleGuardLayout";
+import { PublicOnlyLayout } from "./components/auth/PublicOnlyLayout";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +42,42 @@ export const router = createBrowserRouter([
           {
             path: "/profile",
             element: <ProfilePage />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    element: <ProtectedLayout />,
+    children: [
+      {
+        element: <RoleGuardLayout allow={["ADMIN"]} />,
+        children: [
+          {
+            path: "/admin",
+            element: <AdminLayout />,
+            children: [
+              {
+                index: true,
+                element: <DashboardPage />,
+              },
+              {
+                path: "products",
+                element: <ProductsPage />,
+              },
+              {
+                path: "coupons",
+                element: <CouponsPage />,
+              },
+              {
+                path: "orders",
+                element: <OrdersPage />,
+              },
+              {
+                path: "settings",
+                element: <SettingsPage />,
+              },
+            ],
           },
         ],
       },
