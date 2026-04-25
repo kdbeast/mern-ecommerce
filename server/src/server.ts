@@ -3,10 +3,11 @@ import morgan from "morgan";
 import express from "express";
 import { connectDB } from "./db.js";
 import { ok } from "./utils/envelope.js";
-import { notFound } from "./middleware/notFound.js";
-import { errorHandler } from "./middleware/errorHandler.js";
 import { clerkMiddleware } from "@clerk/express";
+import { notFound } from "./middleware/notFound.js";
 import { authRouter } from "./routes/auth/auth.route.js";
+import { errorHandler } from "./middleware/errorHandler.js";
+import { adminProductRouter } from "./routes/admin/product.route.js";
 
 const mainEntryFunction = async () => {
   await connectDB();
@@ -37,6 +38,7 @@ const mainEntryFunction = async () => {
   });
 
   app.use("/auth", authRouter);
+  app.use("/admin", adminProductRouter);
 
   app.use(notFound);
   app.use(errorHandler);
