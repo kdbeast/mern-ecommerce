@@ -1,6 +1,14 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { HydratedDocument, Schema } from "mongoose";
 
-const categorySchema = new Schema(
+export type Category = {
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type CategoryDocument = HydratedDocument<Category>;
+
+const categorySchema = new Schema<Category>(
   {
     name: {
       type: String,
@@ -12,4 +20,5 @@ const categorySchema = new Schema(
 );
 
 export const Category =
-  mongoose.models.Category || mongoose.model("Category", categorySchema);
+  mongoose.models.Category ||
+  mongoose.model<Category>("Category", categorySchema);
