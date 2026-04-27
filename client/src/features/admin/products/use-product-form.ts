@@ -133,8 +133,8 @@ export function useProductForm({
   }
 
   async function submit() {
-    // if (!form.title.trim() || !form.description.trim() || !form.category.trim())
-    //   return;
+    if (!form.title.trim() || !form.description.trim() || !form.category.trim())
+      return;
 
     try {
       setSaving(true);

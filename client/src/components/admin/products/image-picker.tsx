@@ -97,8 +97,9 @@ export function ImagePicker({
 
                   <div className={imageActionsClass}>
                     <Button
-                      type="button"
                       size="sm"
+                      type="button"
+                      className="cursor-pointer"
                       variant={isCover ? "default" : "secondary"}
                       onClick={() => onCoverImageChange(image.publicId)}
                     >
@@ -107,9 +108,10 @@ export function ImagePicker({
                     </Button>
 
                     <Button
-                      type="button"
                       size="icon"
+                      type="button"
                       variant="ghost"
+                      className="cursor-pointer"
                       onClick={() => onExistingRemove(image.publicId)}
                     >
                       <X className={removeIconClass} />

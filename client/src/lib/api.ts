@@ -10,9 +10,6 @@ export const setApiTokenGetter = (getter: () => Promise<string | null>) => {
 
 const api = axios.create({
   baseURL: env.backendUrl,
-  headers: {
-    "Content-Type": "application/json",
-  },
   withCredentials: true,
 });
 

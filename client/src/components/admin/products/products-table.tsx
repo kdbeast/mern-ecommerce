@@ -106,6 +106,7 @@ export function ProductsTable({
                       <Button
                         size={"icon"}
                         variant="ghost"
+                        className="cursor-pointer"
                         onClick={() => onEdit(product)}
                       >
                         <Pencil className={editIconClass} />
