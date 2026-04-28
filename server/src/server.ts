@@ -5,9 +5,16 @@ import { connectDB } from "./db.js";
 import { ok } from "./utils/envelope.js";
 import { clerkMiddleware } from "@clerk/express";
 import { notFound } from "./middleware/notFound.js";
-import { authRouter } from "./routes/auth/auth.route.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+
+import { authRouter } from "./routes/auth/auth.route.js";
+
+import { adminPromoRouter } from "./routes/admin/promo.route.js";
 import { adminProductRouter } from "./routes/admin/product.route.js";
+
+import { customerPromoRouter } from "./routes/customer/promo.route.js";
+import { customerProductRouter } from "./routes/customer/product.route.js";
+import { customerAddressRouter } from "./routes/customer/address.route.js";
 
 const mainEntryFunction = async () => {
   await connectDB();
@@ -38,7 +45,13 @@ const mainEntryFunction = async () => {
   });
 
   app.use("/auth", authRouter);
+
+  app.use("/admin", adminPromoRouter);
   app.use("/admin", adminProductRouter);
+
+  app.use("/customer", customerPromoRouter);
+  app.use("/customer", customerProductRouter);
+  app.use("/customer", customerAddressRouter);
 
   app.use(notFound);
   app.use(errorHandler);
