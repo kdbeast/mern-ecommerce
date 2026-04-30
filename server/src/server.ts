@@ -13,10 +13,12 @@ import { adminPromoRouter } from "./routes/admin/promo.route.js";
 import { adminProductRouter } from "./routes/admin/product.route.js";
 
 import { customerPromoRouter } from "./routes/customer/promo.route.js";
+import { customerOrderRouter } from "./routes/customer/orders.route.js";
 import { customerProductRouter } from "./routes/customer/product.route.js";
 import { customerAddressRouter } from "./routes/customer/address.route.js";
-import { customerCartWishlistRouter } from "./routes/customer/cart-wishlist.route.js";
 import { customerCheckoutRouter } from "./routes/customer/checkout.route.js";
+import { customerCartWishlistRouter } from "./routes/customer/cart-wishlist.route.js";
+import { customerCheckoutWithPointsRouter } from "./routes/customer/checkout-with-points.js";
 
 const mainEntryFunction = async () => {
   await connectDB();
@@ -51,11 +53,13 @@ const mainEntryFunction = async () => {
   app.use("/admin", adminPromoRouter);
   app.use("/admin", adminProductRouter);
 
+  app.use("/customer", customerOrderRouter);
   app.use("/customer", customerPromoRouter);
   app.use("/customer", customerProductRouter);
   app.use("/customer", customerAddressRouter);
   app.use("/customer", customerCheckoutRouter);
   app.use("/customer", customerCartWishlistRouter);
+  app.use("/customer", customerCheckoutWithPointsRouter);
 
   app.use(notFound);
   app.use(errorHandler);

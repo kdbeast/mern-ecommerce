@@ -1,5 +1,4 @@
 import { Types } from "mongoose";
-import crypto from "crypto";
 import {
   getDbUserFromReq,
   requireAuth,
@@ -12,7 +11,6 @@ import { Promo } from "../../models/promo.model.js";
 import { Order } from "../../models/order.model.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { Router, type Request, type Response } from "express";
-import { razorpay, toSubUnits } from "../../utils/razorpay.js";
 import { requireFound, requireText } from "../../utils/helper.js";
 import { Product, ProductSize } from "../../models/product.model.js";
 
@@ -28,6 +26,7 @@ type CheckoutUserRow = {
   _id: Types.ObjectId;
   name?: string;
   email?: string;
+  points: number;
   addresses: UserAddressRow[];
 };
 
@@ -57,12 +56,31 @@ type PromoRow = {
   endsAt: Date;
 };
 
-export const customerCheckoutRouter = Router();
+export const customerCheckoutWithPointsRouter = Router();
 
-customerCheckoutRouter.use(requireAuth);
+customerCheckoutWithPointsRouter.use(requireAuth);
 
-customerCheckoutRouter.post(
-  "/checkout/create-session",
+customerCheckoutWithPointsRouter.get(
+  "checkout/points",
+  asyncHandler(async (req: Request, res: Response) => {
+    const dbUser = await getDbUserFromReq(req);
+
+    const user = await User.findById(dbUser?._id)
+      .select("points")
+      .lean<{ points: number } | null>();
+
+    const foundUser = requireFound(user, "User not found", 404);
+
+    res.json(
+      ok({
+        points: foundUser.points || 0,
+      }),
+    );
+  }),
+);
+
+customerCheckoutWithPointsRouter.post(
+  "checkout/pay-with-points",
   asyncHandler(async (req: Request, res: Response) => {
     const dbUser = await getDbUserFromReq(req);
 
@@ -163,124 +181,91 @@ customerCheckoutRouter.post(
     }
     const totalAmount = Math.max(subTotal - discountAmount, 0);
 
-    const razorpayOrder = await razorpay.orders.create({
-      amount: toSubUnits(totalAmount),
-      currency: "INR",
-      receipt: `Order_${Date.now()}`,
-    });
-
-    const deliveryAddress = [
-      selectedAddress.address,
-      selectedAddress.state,
-      selectedAddress.postalCode,
-    ]
-      .filter(Boolean)
-      .join(", ");
-
-    const order = await Order.create({
-      user: dbUser?._id,
-      customerName: selectedAddress.fullName || foundUser.name,
-      customerEmail: foundUser.email || "",
-      items,
-      totalItems,
-      deliveryName: selectedAddress.fullName,
-      deliveryAddress,
-      promoCode: appliedPromoCode,
-      discountAmount,
-      totalAmount,
-      paymentStatus: "paid",
-      orderStatus: "placed",
-      razorpayOrderId: razorpayOrder.id,
-    });
-
-    res.status(200).json({
-      razorpay: {
-        keyId: process.env.RAZORPAY_KEY_ID,
-        orderId: razorpayOrder.id,
-        amount: razorpayOrder.amount,
-        currency: "INR",
-      },
-      order: {
-        _id: order._id,
-        totalItems: order.totalItems,
-        discountAmount: order.discountAmount,
-        totalAmount: order.totalAmount,
-      },
-      message: "Order created successfully",
-    });
-  }),
-);
-
-customerCheckoutRouter.post(
-  "/checkout/confirm",
-  asyncHandler(async (req: Request, res: Response) => {
-    const dbUser = await getDbUserFromReq(req);
-    const orderId = String(req.body.orderId || "").trim();
-    const razorpayPaymentId = String(req.body.razorpay_payment_id || "").trim();
-    const razorpayOrderId = String(req.body.razorpay_order_id || "").trim();
-    const razorpaySignature = String(req.body.razorpay_signature || "").trim();
-
-    requireText(orderId, "Order id is needed");
-    requireText(razorpayPaymentId, "razorpayPaymentId is needed");
-    requireText(razorpayOrderId, "razorpayOrderId is needed");
-    requireText(razorpaySignature, "razorpaySignature is needed");
-
-    const order = await Order.findOne({ _id: orderId, user: dbUser._id });
-    const foundOrder = requireFound(order, "Order not found", 404);
-
-    if (foundOrder.paymentStatus === "paid") {
-      res.json(ok({ _id: String(foundOrder._id) }));
-      return;
+    if (totalAmount > foundUser.points) {
+      throw new ApiError(400, "Not enough points to place order");
     }
 
-    if (foundOrder.razorpayOrderId !== razorpayOrderId) {
-      throw new ApiError(400, "Order id mismatch");
+    const deductedUserPoints = await User.updateOne(
+      { _id: dbUser?._id, points: { $gte: totalAmount } },
+      { $inc: { points: -totalAmount } },
+    );
+
+    if (!deductedUserPoints.matchedCount) {
+      throw new ApiError(400, "Not enough points to place order");
     }
 
-    const signature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || "")
-      .update(`${razorpayOrderId}|${razorpayPaymentId}`)
-      .digest("hex");
+    try {
+      for (const item of items) {
+        const updated = await Product.updateOne(
+          {
+            _id: item.product,
+            stock: { $gte: item.quantity },
+          },
+          {
+            $inc: { stock: -item.quantity },
+          },
+        );
 
-    if (signature !== razorpaySignature) {
-      throw new ApiError(400, "Invalid payment signature");
-    }
-
-    for (const item of foundOrder.items) {
-      const updated = await Product.updateOne(
-        {
-          _id: item.product,
-          stock: { $gte: item.quantity },
-        },
-        {
-          $inc: { stock: -item.quantity },
-        },
-      );
-
-      if (!updated.matchedCount) {
-        throw new ApiError(400, "One or more cart items are out of stock");
+        if (!updated.matchedCount) {
+          throw new ApiError(400, "One or more cart items are out of stock");
+        }
       }
-    }
 
-    if (foundOrder.promoCode) {
-      await Promo.updateOne(
-        {
-          code: foundOrder.promoCode,
-          count: { $gt: 0 },
-        },
-        {
-          $inc: { count: -1 },
-        },
+      if (appliedPromoCode) {
+        await Promo.updateOne(
+          { code: appliedPromoCode, count: { $gt: 0 } },
+          { $inc: { count: -1 } },
+        );
+      }
+
+      await Cart.updateOne({ user: dbUser?._id }, { $set: { items: [] } });
+
+      const pointsPaymentId = `PP_${Date.now()}`;
+
+      const deliveryAddress = [
+        selectedAddress.address,
+        selectedAddress.state,
+        selectedAddress.postalCode,
+      ]
+        .filter(Boolean)
+        .join(", ");
+
+      const order = await Order.create({
+        user: dbUser?._id,
+        customerName: selectedAddress.fullName || foundUser.name,
+        customerEmail: foundUser.email || "",
+        items,
+        totalItems,
+        deliveryName: selectedAddress.fullName,
+        deliveryAddress,
+        promoCode: appliedPromoCode,
+        discountAmount,
+        totalAmount,
+        paymentStatus: "paid",
+        orderStatus: "placed",
+        razorpayOrderId: pointsPaymentId,
+        paymentId: pointsPaymentId,
+        paidAt: new Date(),
+      });
+
+      const updatedUser = await User.findById(dbUser?._id)
+        .select("points")
+        .lean<{ points: number } | null>();
+
+      res.json(
+        ok({
+          order: {
+            _id: String(order._id),
+            totalPoints: totalAmount,
+          },
+        }),
       );
+    } catch (error) {
+      await User.updateOne(
+        { _id: dbUser?._id },
+        { $inc: { points: totalAmount } },
+      );
+      throw error;
     }
-
-    await Cart.updateOne({ user: dbUser._id }, { $set: { items: [] } });
-
-    foundOrder.paymentStatus = "paid";
-    foundOrder.paymentId = razorpayPaymentId;
-    foundOrder.paidAt = new Date();
-    await foundOrder.save();
-
-    res.json(ok({ _id: String(foundOrder._id) }));
   }),
 );
