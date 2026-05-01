@@ -10,8 +10,12 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import { authRouter } from "./routes/auth/auth.route.js";
 
 import { adminPromoRouter } from "./routes/admin/promo.route.js";
+import { adminOrderRouter } from "./routes/admin/orders.route.js";
 import { adminProductRouter } from "./routes/admin/product.route.js";
+import { adminSettingsRouter } from "./routes/admin/settings.route.js";
+import { adminDashboardRouter } from "./routes/admin/dashboard.route.js";
 
+import { customerHomeRouter } from "./routes/customer/home.route.js";
 import { customerPromoRouter } from "./routes/customer/promo.route.js";
 import { customerOrderRouter } from "./routes/customer/orders.route.js";
 import { customerProductRouter } from "./routes/customer/product.route.js";
@@ -51,8 +55,12 @@ const mainEntryFunction = async () => {
   app.use("/auth", authRouter);
 
   app.use("/admin", adminPromoRouter);
+  app.use("/admin", adminOrderRouter);
   app.use("/admin", adminProductRouter);
+  app.use("/admin", adminSettingsRouter);
+  app.use("/admin", adminDashboardRouter);
 
+  app.use("/customer", customerHomeRouter);
   app.use("/customer", customerOrderRouter);
   app.use("/customer", customerPromoRouter);
   app.use("/customer", customerProductRouter);
