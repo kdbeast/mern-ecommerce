@@ -71,8 +71,8 @@ customerOrderRouter.patch(
     });
     const foundOrder = requireFound(order, "Order not found", 404);
 
-    if (foundOrder.orderStatus !== "delievered" || !foundOrder.deliveredAt) {
-      throw new ApiError(400, "Only delievered orders can be returned");
+    if (foundOrder.orderStatus !== "delivered" || !foundOrder.deliveredAt) {
+      throw new ApiError(400, "Only delivered orders can be returned");
     }
 
     const sevenDaysReturnWindowTime = 7 * 24 * 60 * 60 * 1000;

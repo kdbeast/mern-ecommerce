@@ -49,7 +49,7 @@ const parsePromoPayload = (req: Request) => {
     throw new ApiError(400, "Percentage must be between 1 to 100");
   }
 
-  if (Number.isInteger(count) || count < 1) {
+  if (Number.isNaN(count) || count < 1) {
     throw new ApiError(400, "Promo count must be atleast 1");
   }
 

@@ -251,7 +251,7 @@ customerCartWishlistRouter.post(
 );
 
 customerCartWishlistRouter.patch(
-  "cart/items/:productId/increase",
+  "/cart/items/:productId/increase",
   asyncHandler(async (req: Request, res: Response) => {
     const dbUser = await getDbUserFromReq(req);
 
@@ -301,7 +301,7 @@ customerCartWishlistRouter.patch(
 );
 
 customerCartWishlistRouter.patch(
-  "cart/items/:productId/decrease",
+  "/cart/items/:productId/decrease",
   asyncHandler(async (req: Request, res: Response) => {
     const dbUser = await getDbUserFromReq(req);
 
@@ -348,7 +348,7 @@ customerCartWishlistRouter.patch(
 );
 
 customerCartWishlistRouter.delete(
-  "cart/items/:productId",
+  "/cart/items/:productId",
   asyncHandler(async (req: Request, res: Response) => {
     const dbUser = await getDbUserFromReq(req);
 

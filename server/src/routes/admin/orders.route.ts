@@ -64,7 +64,7 @@ adminOrderRouter.get(
 );
 
 adminOrderRouter.patch(
-  "/orders/:orderI/status",
+  "/orders/:orderId/status",
   asyncHandler(async (req: Request, res: Response) => {
     const orderId = String(req.params.orderId || "").trim();
     const orderStatus = String(
