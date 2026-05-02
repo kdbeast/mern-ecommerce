@@ -1,5 +1,5 @@
-import { ok } from "assert";
 import { Types } from "mongoose";
+import { ok } from "../../utils/envelope.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { Promo } from "../../models/promo.model.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
@@ -20,7 +20,7 @@ type PromoDbItem = {
 
 const mapPromo = (item: PromoDbItem) => {
   return {
-    id: String(item._id || ""),
+    _id: String(item._id || ""),
     code: item.code,
     percentage: item.percentage,
     count: item.count,

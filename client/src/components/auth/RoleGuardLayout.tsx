@@ -1,7 +1,8 @@
 import { useAuth } from "@clerk/react";
+import type { UserRole } from "@/lib/types";
+import { CommonLoader } from "../common/Loader";
 import { Outlet, Navigate } from "react-router";
 import { useAuthStore } from "@/features/auth/store";
-import type { UserRole } from "@/lib/types";
 
 type RoleGuardLayoutProps = {
   allow: UserRole[];
@@ -11,7 +12,7 @@ export const RoleGuardLayout = ({ allow }: RoleGuardLayoutProps) => {
   const { isSignedIn } = useAuth();
   const { isBootstrapped, user, status } = useAuthStore();
 
-  if (!isBootstrapped || status === "loading") return null;
+  if (!isBootstrapped || status === "loading") return <CommonLoader />;
 
   if (!user) {
     return <Navigate to="/sign-in" replace />;

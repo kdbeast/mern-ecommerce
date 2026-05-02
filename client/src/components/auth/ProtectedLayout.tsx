@@ -1,4 +1,5 @@
 import { useAuth } from "@clerk/react";
+import { CommonLoader } from "../common/Loader";
 import { useAuthStore } from "@/features/auth/store";
 import { useLocation, Navigate, Outlet } from "react-router";
 
@@ -8,7 +9,7 @@ export const ProtectedLayout = () => {
   const { isBootstrapped, status } = useAuthStore();
 
   if (!isLoaded || (isSignedIn && (!isBootstrapped || status === "loading")))
-    return null;
+    return <CommonLoader />;
 
   if (!isSignedIn) {
     return (

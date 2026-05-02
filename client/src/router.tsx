@@ -1,5 +1,5 @@
 import OrdersPage from "./pages/admin/Orders";
-import CouponsPage from "./pages/admin/Coupons";
+import AdminPromos from "./pages/admin/Promos";
 import { HomePage } from "./pages/customer/Home";
 import { SignUpPage } from "./pages/auth/SignUp";
 import { SignInPage } from "./pages/auth/SignIn";
@@ -67,7 +67,7 @@ export const router = createBrowserRouter([
               },
               {
                 path: "coupons",
-                element: <CouponsPage />,
+                element: <AdminPromos />,
               },
               {
                 path: "orders",

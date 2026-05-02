@@ -91,6 +91,25 @@ export const apiPut = async <TResponse, TBody = unknown>(
   }
 };
 
+export const apiPatch = async <TResponse, TBody = unknown>(
+  url: string,
+  body: TBody,
+  config?: AxiosRequestConfig,
+) => {
+  try {
+    const response = await api.patch<ApiEnvelope<TResponse>>(url, body, config);
+
+    if (response.data.status === "error" || !response.data.data) {
+      throw new Error(
+        response.data.errors?.[0].message || "Something went wrong!",
+      );
+    }
+    return response.data.data;
+  } catch (error) {
+    throw new Error(getErrorMessage(error));
+  }
+};
+
 export const apiDelete = async <T>(
   url: string,
   config?: AxiosRequestConfig,
