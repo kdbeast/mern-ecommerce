@@ -1,7 +1,13 @@
+import {
+  addCustomerWishlist,
+  removeCustomerWishlist,
+} from "../../wishlist/api";
+import { toast } from "sonner";
 import { create } from "zustand";
-import type { CustomerProductDetailsResponse, ProductSize } from "../types";
 import { getCustomerProductDetails } from "../api";
 import { getCoverImage } from "../product-list-shared";
+import { useCustomerWishlistStore } from "../../wishlist/store";
+import type { CustomerProductDetailsResponse, ProductSize } from "../types";
 
 type CustomerProductDetailsStore = {
   loading: boolean;
@@ -36,7 +42,7 @@ const defaultState = {
 };
 
 export const useCustomerProductDetailsStore =
-  create<CustomerProductDetailsStore>((set) => ({
+  create<CustomerProductDetailsStore>((set, get) => ({
     ...defaultState,
     loadProduct: async (productId) => {
       if (!productId) {
@@ -107,9 +113,31 @@ export const useCustomerProductDetailsStore =
       isSignedIn,
       isWishlistActive,
     ) => {
-      console.log("isLoaded", isLoaded);
-      console.log("isBootstrapped", isBootstrapped);
-      console.log("isSignedIn", isSignedIn);
-      console.log("isWishlistActive", isWishlistActive);
+      const product = get().data?.product ?? null;
+
+      if (!product) {
+        return;
+      }
+
+      if (!isLoaded || !isBootstrapped || !isSignedIn) {
+        toast.error("Please sign in to add this product to your wishlist");
+        return;
+      }
+
+      try {
+        if (isWishlistActive) {
+          const response = await removeCustomerWishlist(product._id);
+          useCustomerWishlistStore.getState().setItems(response?.items ?? []);
+          toast.success(`${product?.title} removed from wishlist`);
+        } else {
+          const response = await addCustomerWishlist({
+            productId: product._id,
+          });
+          useCustomerWishlistStore.getState().setItems(response?.items ?? []);
+          toast.success(`${product?.title} saved to wishlist`);
+        }
+      } catch {
+        toast.error("Failed to toggle wishlist items");
+      }
     },
   }));

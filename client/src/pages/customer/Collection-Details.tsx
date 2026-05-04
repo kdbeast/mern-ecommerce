@@ -9,6 +9,7 @@ import { useCustomerProductDetailsStore } from "@/features/customer/products/det
 import CustomerProductRelatedCard from "@/components/customer/products/details/customer-related-product-card";
 import CustomerProductDetailsGallery from "@/components/customer/products/details/customer-product-details-gallery";
 import CustomerProductDetailsSummary from "@/components/customer/products/details/customer-product-details-summary";
+import { useCustomerWishlistStore } from "@/features/customer/wishlist/store";
 
 const pageWrapClass = "min-h-screen bg-background";
 const heroSectionClass =
@@ -48,13 +49,13 @@ function CollectionDetails() {
     addToCart,
   } = useCustomerProductDetailsStore((state) => state);
 
-  //   const wishlistItems = useCustomerWishlistStore((state) => state.items);
+  const wishlistItems = useCustomerWishlistStore((state) => state.items);
 
   const product = data?.product ?? null;
   const relatedProducts = data?.relatedProducts ?? [];
-  //   const isWishlistActive = !!product
-  //     ? wishlistItems.some((item) => item.productId === product._id)
-  //     : false;
+  const isWishlistActive = product
+    ? wishlistItems.some((item) => item.productId === product._id)
+    : false;
 
   useEffect(() => {
     void loadProduct(id);
@@ -97,15 +98,15 @@ function CollectionDetails() {
             selectedSize={selectedSize}
             setSelectedColor={setSelectedColor}
             setSelectedSize={setSelectedSize}
-            // toggleWishlist={() =>
-            //   toggleWishlist(
-            //     isLoaded,
-            //     isBootstrapped,
-            //     Boolean(isSignedIn),
-            //     isWishlistActive,
-            //   )
-            // }
-            // isWishlistActive={isWishlistActive}
+            toggleWishlist={() =>
+              toggleWishlist(
+                isLoaded,
+                isBootstrapped,
+                Boolean(isSignedIn),
+                isWishlistActive,
+              )
+            }
+            isWishlistActive={isWishlistActive}
             onAddToCart={() =>
               addToCart(isLoaded, isBootstrapped, Boolean(isSignedIn))
             }

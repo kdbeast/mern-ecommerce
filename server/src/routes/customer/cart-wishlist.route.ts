@@ -505,7 +505,7 @@ customerCartWishlistRouter.delete(
   "/wishlist/items/:productId",
   asyncHandler(async (req: Request, res: Response) => {
     const dbUser = await getDbUserFromReq(req);
-    const productId = String(req.body.productId || "").trim();
+    const productId = String(req.params.productId || "").trim();
 
     requireText(productId, "Product id is required");
 
