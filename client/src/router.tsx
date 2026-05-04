@@ -2,6 +2,7 @@ import { HomePage } from "./pages/customer/Home";
 import { SignUpPage } from "./pages/auth/SignUp";
 import { SignInPage } from "./pages/auth/SignIn";
 import Collections from "./pages/customer/Collections";
+import CollectionDetails from "./pages/customer/Collection-Details";
 
 import OrdersPage from "./pages/admin/Orders";
 import AdminPromos from "./pages/admin/Promos";
@@ -43,6 +44,10 @@ export const router = createBrowserRouter([
           {
             path: "/collections",
             element: <Collections />,
+          },
+          {
+            path: "/collection/:id",
+            element: <CollectionDetails />,
           },
         ],
       },
