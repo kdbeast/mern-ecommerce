@@ -10,7 +10,6 @@ import ProductsPage from "./pages/admin/Products";
 import SettingsPage from "./pages/admin/Settings";
 import DashboardPage from "./pages/admin/Dashboard";
 
-import { ProfilePage } from "./pages/customer/Profile";
 import { AdminLayout } from "./components/layout/AdminLayout";
 
 import { CustomerLayout } from "./components/layout/CustomerLayout";
@@ -53,12 +52,7 @@ export const router = createBrowserRouter([
       },
       {
         element: <ProtectedLayout />,
-        children: [
-          {
-            path: "/profile",
-            element: <ProfilePage />,
-          },
-        ],
+        children: [],
       },
     ],
   },

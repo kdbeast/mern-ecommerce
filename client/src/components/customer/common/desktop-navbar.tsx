@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import {
   Heart,
@@ -24,6 +23,9 @@ import { useAuthStore } from "@/features/auth/store";
 import { CustomerMobileNavbar } from "./mobile-navbar";
 import CustomerWishlistDialog from "../wishlist/customer-wishlist-dialog";
 import { useCustomerWishlistStore } from "@/features/customer/wishlist/store";
+import { useCustomerProfileStore } from "@/features/customer/profile/store";
+import { CommonLoader } from "@/components/common/Loader";
+import CustomerProfileDialog from "../profile/customer-profile-dialog";
 
 type NavItem = {
   label: string;
@@ -103,9 +105,9 @@ export const CustomerNavbar = () => {
     setOpen: setWishlistOpen,
   } = useCustomerWishlistStore((state) => state);
 
-  // const { openProfile, clear: clearProfile } = useCustomerProfileStore(
-  //   (state) => state,
-  // );
+  const { openProfile, clear: clearProfile } = useCustomerProfileStore(
+    (state) => state,
+  );
 
   //   const { setOpen, cart, loadCart } = useCustomerCartAndCheckoutStore(
   //     (state) => state,
@@ -120,7 +122,7 @@ export const CustomerNavbar = () => {
 
     if (!isSignedIn) {
       clearWishlist();
-      // clearProfile();
+      clearProfile();
       return;
     }
 
@@ -128,7 +130,7 @@ export const CustomerNavbar = () => {
   }, [
     clearWishlist,
     isBootstrapped,
-    // clearProfile,
+    clearProfile,
     isSignedIn,
     isLoaded,
     loadWishlist,
@@ -137,6 +139,10 @@ export const CustomerNavbar = () => {
 
   const showSignInUi = isLoaded && isBootstrapped && isSignedIn;
   const wishlistCount = wishlistItems.length;
+
+  if (!isSignedIn) {
+    return <CommonLoader />;
+  }
 
   return (
     <header className={headerClass}>
@@ -179,7 +185,7 @@ export const CustomerNavbar = () => {
                 className={accountDropdownContent}
               >
                 <DropdownMenuItem
-                  //   onClick={() => void openProfile()}
+                  onClick={() => void openProfile()}
                   className={dropdownItemLink}
                 >
                   <User className="h-4 w-4" />
@@ -187,7 +193,7 @@ export const CustomerNavbar = () => {
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
-                  //   onClick={() => void openOrders()}
+                  // onClick={() => void openOrders()}
                   className={dropdownItemLink}
                 >
                   <ShoppingBasket className="h-4 w-4" />
@@ -208,7 +214,7 @@ export const CustomerNavbar = () => {
           )}
 
           <div
-            //    onClick={() => setOpen(true)}
+            //  onClick={() => setOpen(true)}
             className={iconLink}
           >
             <ShoppingCart className="h-4.5 w-4.5" />
@@ -219,7 +225,7 @@ export const CustomerNavbar = () => {
         <CustomerMobileNavbar isSignedIn={!!isSignedIn} />
 
         {showSignInUi ? <CustomerWishlistDialog /> : null}
-        {/* {showSignInUi ? <CustomerProfileDialog /> : null} */}
+        {showSignInUi ? <CustomerProfileDialog /> : null}
         {/* {showSignInUi ? <CustomerOrdersDialog /> : null} */}
         {/* <CustomerCartAndCheckoutDrawer /> */}
       </div>
