@@ -61,9 +61,10 @@ const mainEntryFunction = async () => {
   app.use("/admin", adminDashboardRouter);
 
   app.use("/customer", customerHomeRouter);
+  app.use("/customer", customerProductRouter);
+
   app.use("/customer", customerOrderRouter);
   app.use("/customer", customerPromoRouter);
-  app.use("/customer", customerProductRouter);
   app.use("/customer", customerAddressRouter);
   app.use("/customer", customerCheckoutRouter);
   app.use("/customer", customerCartWishlistRouter);

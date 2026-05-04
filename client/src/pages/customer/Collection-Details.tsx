@@ -5,11 +5,11 @@ import { Link, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store";
 import { CommonLoader } from "@/components/common/Loader";
+import { useCustomerWishlistStore } from "@/features/customer/wishlist/store";
 import { useCustomerProductDetailsStore } from "@/features/customer/products/details/store";
 import CustomerProductRelatedCard from "@/components/customer/products/details/customer-related-product-card";
 import CustomerProductDetailsGallery from "@/components/customer/products/details/customer-product-details-gallery";
 import CustomerProductDetailsSummary from "@/components/customer/products/details/customer-product-details-summary";
-import { useCustomerWishlistStore } from "@/features/customer/wishlist/store";
 
 const pageWrapClass = "min-h-screen bg-background";
 const heroSectionClass =

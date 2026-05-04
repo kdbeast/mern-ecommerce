@@ -42,11 +42,11 @@ export const router = createBrowserRouter([
             element: <SignUpPage />,
           },
           {
-            path: "/collections",
+            path: "collections",
             element: <Collections />,
           },
           {
-            path: "/collection/:id",
+            path: "collection/:id",
             element: <CollectionDetails />,
           },
         ],

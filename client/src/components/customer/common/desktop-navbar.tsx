@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect } from "react";
 import {
   Heart,
   LogIn,
@@ -17,18 +19,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@clerk/react";
-// import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store";
 import { CustomerMobileNavbar } from "./mobile-navbar";
-// import { useCustomerWishlistStore } from "@/features/customer/wishlist/store";
-// import CustomerWishlistDialog from "../wishlist/customer-wishlist-dialog";
-// import { useCustomerProfileStore } from "@/features/customer/profile/store";
-// import CustomerProfileDialog from "../profile/customer-profile-dialog";
-// import { useCustomerCartAndCheckoutStore } from "@/features/customer/cart-and-checkout/store";
-// import CustomerCartAndCheckoutDrawer from "../cart-and-checkout/customer-cart-and-checkout-drawer";
-// import { useCustomerOrdersStore } from "@/features/customer/orders/store";
-// import CustomerOrdersDialog from "../orders/customer-orders-dialog";
+import CustomerWishlistDialog from "../wishlist/customer-wishlist-dialog";
+import { useCustomerWishlistStore } from "@/features/customer/wishlist/store";
 
 type NavItem = {
   label: string;
@@ -52,7 +47,7 @@ const textLink =
   "inline-flex h-10 items-center gap-2 rounded-xl px-3 text-[15px] font-medium text-foreground/90 transition hover:bg-white/5 hover:text-foreground";
 
 const iconLink =
-  "relative inline-flex h-10 w-10 items-center justify-center rounded-xl text-foreground/90 transition hover:bg-white/5 hover:text-foreground";
+  "relative inline-flex h-10 w-10 items-center justify-center rounded-xl text-foreground/90 transition hover:bg-white/5 hover:text-foreground cursor-pointer";
 
 const brandWrap = "flex shrink-0 items-center gap-3";
 
@@ -64,7 +59,7 @@ const desktopCollectionsWrap = "ml-6 hidden lg:block";
 const desktopNav = "ml-auto hidden items-center gap-1 lg:flex";
 
 const dropdownButton =
-  "h-10 rounded-xl px-3 text-[15px] font-medium text-foreground/90 hover:bg-white/5 hover:text-foreground";
+  "h-10 rounded-xl px-3 text-[15px] font-medium text-foreground/90 hover:bg-white/5 hover:text-foreground cursor-pointer";
 
 const dropdownContent =
   "mt-3 rounded-2xl border-border bg-popover/95 p-2 backdrop-blur";
@@ -77,10 +72,10 @@ const dropdownItemLink =
 const cartBadge =
   "absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full bg-amber-400 px-1.5 text-[11px] font-semibold leading-5 text-black";
 
-// const wishlistBadge =
-//   "absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full bg-amber-400 px-1.5 text-[11px] font-semibold leading-5 text-black";
+const wishlistBadge =
+  "absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full bg-amber-400 px-1.5 text-[11px] font-semibold leading-5 text-black";
 
-function NavTextLink({
+const NavTextLink = ({
   href,
   label,
   icon: Icon,
@@ -88,29 +83,29 @@ function NavTextLink({
   href: string;
   label: string;
   icon: LucideIcon;
-}) {
+}) => {
   return (
     <Link to={href} className={textLink}>
       <Icon className="h-[18px] w-[18px]" />
       <span>{label}</span>
     </Link>
   );
-}
+};
 
-export function CustomerNavbar() {
-  const { isSignedIn, signOut, isLoaded } = useAuth();
+export const CustomerNavbar = () => {
   const { isBootstrapped } = useAuthStore();
+  const { isSignedIn, signOut, isLoaded } = useAuth();
 
-  //   const {
-  //     items: wishlistItems,
-  //     loadWishlist,
-  //     clear: clearWishlist,
-  //     setOpen: setWishlistOpen,
-  //   } = useCustomerWishlistStore((state) => state);
+  const {
+    items: wishlistItems,
+    loadWishlist,
+    clear: clearWishlist,
+    setOpen: setWishlistOpen,
+  } = useCustomerWishlistStore((state) => state);
 
-  //   const { openProfile, clear: clearProfile } = useCustomerProfileStore(
-  //     (state) => state,
-  //   );
+  // const { openProfile, clear: clearProfile } = useCustomerProfileStore(
+  //   (state) => state,
+  // );
 
   //   const { setOpen, cart, loadCart } = useCustomerCartAndCheckoutStore(
   //     (state) => state,
@@ -118,30 +113,30 @@ export function CustomerNavbar() {
 
   //   const { openOrders } = useCustomerOrdersStore((state) => state);
 
-  //   useEffect(() => {
-  //     if (!isLoaded || !isBootstrapped) return;
+  useEffect(() => {
+    if (!isLoaded || !isBootstrapped) return;
 
-  //     void loadCart(Boolean(isSignedIn));
+    // void loadCart(Boolean(isSignedIn));
 
-  //     if (!isSignedIn) {
-  //       clearWishlist();
-  //       clearProfile();
-  //       return;
-  //     }
+    if (!isSignedIn) {
+      clearWishlist();
+      // clearProfile();
+      return;
+    }
 
-  //     void loadWishlist();
-  //   }, [
-  //     clearWishlist,
-  //     isBootstrapped,
-  //     clearProfile,
-  //     isSignedIn,
-  //     isLoaded,
-  //     loadWishlist,
-  //     loadCart,
-  //   ]);
+    void loadWishlist();
+  }, [
+    clearWishlist,
+    isBootstrapped,
+    // clearProfile,
+    isSignedIn,
+    isLoaded,
+    loadWishlist,
+    // loadCart,
+  ]);
 
   const showSignInUi = isLoaded && isBootstrapped && isSignedIn;
-  //   const wishlistCount = wishlistItems.length;
+  const wishlistCount = wishlistItems.length;
 
   return (
     <header className={headerClass}>
@@ -164,10 +159,10 @@ export function CustomerNavbar() {
             <button
               type="button"
               className={iconLink}
-              //   onClick={() => setWishlistOpen(true)}
+              onClick={() => setWishlistOpen(true)}
             >
               <Heart className="w-[20px] h-[20px]" />
-              {/* <span className={wishlistBadge}>{wishlistCount}</span> */}
+              <span className={wishlistBadge}>{wishlistCount}</span>
             </button>
           ) : null}
 
@@ -223,11 +218,11 @@ export function CustomerNavbar() {
 
         <CustomerMobileNavbar isSignedIn={!!isSignedIn} />
 
-        {/* {showSignInUi ? <CustomerWishlistDialog /> : null} */}
+        {showSignInUi ? <CustomerWishlistDialog /> : null}
         {/* {showSignInUi ? <CustomerProfileDialog /> : null} */}
         {/* {showSignInUi ? <CustomerOrdersDialog /> : null} */}
         {/* <CustomerCartAndCheckoutDrawer /> */}
       </div>
     </header>
   );
-}
+};
