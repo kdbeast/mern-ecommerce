@@ -8,7 +8,7 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 
 export const customerProductRouter = Router();
 
-type ProductSort = "recent" | "low-to-high" | "high-to-low";
+type ProductSort = "recent" | "price-low" | "price-high";
 
 type ProductAppliedFilterListQuery = {
   category?: string;
@@ -19,7 +19,7 @@ type ProductAppliedFilterListQuery = {
 };
 
 customerProductRouter.get(
-  "categories",
+  "/categories",
   asyncHandler(async (_req: Request, res: Response, _next: NextFunction) => {
     const categories = await Category.find({}).sort({ name: 1 });
 
@@ -28,7 +28,7 @@ customerProductRouter.get(
 );
 
 customerProductRouter.get(
-  "products",
+  "/products",
   asyncHandler(
     async (
       req: Request<{}, {}, {}, ProductAppliedFilterListQuery>,
@@ -53,17 +53,17 @@ customerProductRouter.get(
       }
 
       if (color) {
-        query.color = color;
+        query.colors = color;
       }
 
       if (size) {
-        query.size = size;
+        query.sizes = size;
       }
 
       let sortOptions: Record<string, 1 | -1> = { createdAt: -1 };
-      if (sort === "low-to-high") {
+      if (sort === "price-low") {
         sortOptions = { price: 1 };
-      } else if (sort === "high-to-low") {
+      } else if (sort === "price-high") {
         sortOptions = { price: -1 };
       }
 
@@ -77,7 +77,7 @@ customerProductRouter.get(
 );
 
 customerProductRouter.get(
-  "products/:id",
+  "/products/:id",
   asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const { id: productId } = req.params;
 
