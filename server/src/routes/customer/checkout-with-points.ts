@@ -61,7 +61,7 @@ export const customerCheckoutWithPointsRouter = Router();
 customerCheckoutWithPointsRouter.use(requireAuth);
 
 customerCheckoutWithPointsRouter.get(
-  "checkout/points",
+  "/checkout/points",
   asyncHandler(async (req: Request, res: Response) => {
     const dbUser = await getDbUserFromReq(req);
 
@@ -80,7 +80,7 @@ customerCheckoutWithPointsRouter.get(
 );
 
 customerCheckoutWithPointsRouter.post(
-  "checkout/pay-with-points",
+  "/checkout/pay-with-points",
   asyncHandler(async (req: Request, res: Response) => {
     const dbUser = await getDbUserFromReq(req);
 

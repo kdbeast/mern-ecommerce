@@ -93,7 +93,7 @@ export const apiPut = async <TResponse, TBody = unknown>(
 
 export const apiPatch = async <TResponse, TBody = unknown>(
   url: string,
-  body: TBody,
+  body?: TBody,
   config?: AxiosRequestConfig,
 ) => {
   try {

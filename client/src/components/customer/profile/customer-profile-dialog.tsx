@@ -18,7 +18,7 @@ const dialogClass =
 const dialogTitle = "flex items-center gap-2";
 
 const shellClass = "space-y-6";
-const accountCardClass = "border border-border/60 bg-card/80 p-5";
+const accountCardClass = "border border-border bg-card p-5";
 const accountRowClass = "flex flex-wrap items-center justify-between gap-4";
 const accountTextClass = "space-y-1";
 const accountTitleClass = "text-xl font-semibold text-foreground";
@@ -34,7 +34,7 @@ const sectionHeaderClass = "flex items-center justify-between gap-3";
 const sectionTitleClass = "text-lg font-semibold text-foreground";
 
 const listClass = "space-y-3";
-const itemClass = "space-y-3 border border-border/60 bg-card/80 p-4";
+const itemClass = "space-y-3 border border-border bg-card p-4";
 const itemTopClass = "flex flex-wrap items-start justify-between gap-3";
 const itemTextClass = "space-y-1";
 const defaultClass =
@@ -44,7 +44,7 @@ const actionRowClass = "flex gap-2";
 const buttonClass = "rounded-none cursor-pointer";
 const emptyClass = "text-sm text-muted-foreground";
 
-const formWrapClass = "space-y-4 border border-border/60 bg-card/80 p-5";
+const formWrapClass = "space-y-4 border border-border bg-card p-5";
 const twoColumnClass = "grid gap-4 sm:grid-cols-2";
 const fieldClass = "space-y-2";
 const inputClass = "rounded-none";

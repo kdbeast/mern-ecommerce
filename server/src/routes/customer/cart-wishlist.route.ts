@@ -89,18 +89,18 @@ const getCartResponse = async (userId: string) => {
 };
 
 const getSelectedVariant = (
-  product: { color: string[]; sizes: ProductSize[] },
+  product: { colors: string[]; sizes: ProductSize[] },
   colorValue: string,
   sizeValue: string,
 ) => {
   let color: string | undefined;
   let size: ProductSize | undefined;
 
-  if (product.color.length > 0) {
+  if (product.colors.length > 0) {
     if (!colorValue) {
       throw new ApiError(400, "Color is required");
     }
-    if (!product.color.includes(colorValue)) {
+    if (!product.colors.includes(colorValue)) {
       throw new ApiError(400, "Invalid color");
     }
     color = colorValue;
@@ -256,8 +256,8 @@ customerCartWishlistRouter.patch(
     const dbUser = await getDbUserFromReq(req);
 
     const productId = String(req.params.productId || "").trim();
-    const colorValue = String(req.body.color || "").trim();
-    const sizeValue = String(req.body.size || "").trim();
+    const colorValue = String(req.query.color || "").trim();
+    const sizeValue = String(req.query.size || "").trim();
 
     requireText(productId, "Product id is required");
 
@@ -306,8 +306,8 @@ customerCartWishlistRouter.patch(
     const dbUser = await getDbUserFromReq(req);
 
     const productId = String(req.params.productId || "").trim();
-    const colorValue = String(req.body.color || "").trim();
-    const sizeValue = String(req.body.size || "").trim();
+    const colorValue = String(req.query.color || "").trim();
+    const sizeValue = String(req.query.size || "").trim();
 
     requireText(productId, "Product id is required");
 
@@ -353,8 +353,8 @@ customerCartWishlistRouter.delete(
     const dbUser = await getDbUserFromReq(req);
 
     const productId = String(req.params.productId || "").trim();
-    const colorValue = String(req.body.color || "").trim();
-    const sizeValue = String(req.body.size || "").trim();
+    const colorValue = String(req.query.color || "").trim();
+    const sizeValue = String(req.query.size || "").trim();
 
     requireText(productId, "Product id is required");
 

@@ -8,6 +8,7 @@ import { getCustomerProductDetails } from "../api";
 import { getCoverImage } from "../product-list-shared";
 import { useCustomerWishlistStore } from "../../wishlist/store";
 import type { CustomerProductDetailsResponse, ProductSize } from "../types";
+import { useCustomerCartAndCheckoutStore } from "../../cart-and-checkout/store";
 
 type CustomerProductDetailsStore = {
   loading: boolean;
@@ -46,67 +47,49 @@ export const useCustomerProductDetailsStore =
     ...defaultState,
     loadProduct: async (productId) => {
       if (!productId) {
-        set(() => ({
-          data: null,
+        set({
           loading: false,
+          data: null,
           selectedImage: "",
           selectedColor: "",
           selectedSize: "",
-        }));
+        });
       }
 
-      set(() => ({
+      set({
         loading: true,
         data: null,
         selectedImage: "",
         selectedColor: "",
         selectedSize: "",
-      }));
+      });
 
       try {
         const response = await getCustomerProductDetails(productId);
         const product = response?.product ?? null;
-        set(() => ({
+
+        set({
           loading: false,
           data: response ?? null,
           selectedImage: product ? getCoverImage(product) : "",
-          selectedColor: product?.colors?.[0] ?? "",
-          selectedSize: product?.sizes?.[0] ?? "",
-        }));
-      } catch (error) {
-        console.error("Failed to load product", error);
-        set(() => ({
-          data: null,
+          selectedColor: product?.colors?.[0] || "",
+          selectedSize: product?.sizes?.[0] || "",
+        });
+      } catch {
+        set({
           loading: false,
+          data: null,
           selectedImage: "",
           selectedColor: "",
           selectedSize: "",
-        }));
+        });
       }
     },
 
-    clear: () => {
-      set(() => defaultState);
-    },
-
-    setSelectedImage: (value) => {
-      set(() => ({ selectedImage: value }));
-    },
-
-    setSelectedColor: (value) => {
-      set(() => ({ selectedColor: value }));
-    },
-
-    setSelectedSize: (value) => {
-      set(() => ({ selectedSize: value }));
-    },
-
-    addToCart: async (isLoaded, isBootstrapped, isSignedIn) => {
-      console.log("isLoaded", isLoaded);
-      console.log("isBootstrapped", isBootstrapped);
-      console.log("isSignedIn", isSignedIn);
-    },
-
+    clear: () => set(defaultState),
+    setSelectedImage: (value) => set({ selectedImage: value }),
+    setSelectedColor: (value) => set({ selectedColor: value }),
+    setSelectedSize: (value) => set({ selectedSize: value }),
     toggleWishlist: async (
       isLoaded,
       isBootstrapped,
@@ -115,29 +98,55 @@ export const useCustomerProductDetailsStore =
     ) => {
       const product = get().data?.product ?? null;
 
-      if (!product) {
-        return;
-      }
+      if (!product) return;
 
       if (!isLoaded || !isBootstrapped || !isSignedIn) {
-        toast.error("Please sign in to add this product to your wishlist");
+        toast.error("Sign in to save");
         return;
       }
 
       try {
         if (isWishlistActive) {
-          const response = await removeCustomerWishlist(product._id);
+          const response = await removeCustomerWishlist(product?._id);
           useCustomerWishlistStore.getState().setItems(response?.items ?? []);
-          toast.success(`${product?.title} removed from wishlist`);
-        } else {
-          const response = await addCustomerWishlist({
-            productId: product._id,
-          });
-          useCustomerWishlistStore.getState().setItems(response?.items ?? []);
-          toast.success(`${product?.title} saved to wishlist`);
+          toast.success("Removed");
+          return;
         }
+
+        const response = await addCustomerWishlist({
+          productId: product._id,
+        });
+        useCustomerWishlistStore.getState().setItems(response?.items ?? []);
+        toast.success("Saved");
       } catch {
         toast.error("Failed to toggle wishlist items");
       }
+    },
+    addToCart: async (isLoaded, isBootatraped, isSignedIn) => {
+      const { data, selectedColor, selectedSize } = get();
+      const product = data?.product ?? null;
+
+      if (!product || product.stock < 1) return;
+
+      if (!isLoaded || !isBootatraped) {
+        toast.error("Try again");
+        return;
+      }
+
+      await useCustomerCartAndCheckoutStore.getState().addItem(
+        {
+          productId: product._id,
+          quantity: 1,
+          color: selectedColor || undefined,
+          size: selectedSize || undefined,
+          title: product.title,
+          brand: product.brand,
+          image: getCoverImage(product),
+          finalPrice: product.salePercentage
+            ? product.price - (product.price * product.salePercentage) / 100
+            : product.price,
+        },
+        isSignedIn,
+      );
     },
   }));

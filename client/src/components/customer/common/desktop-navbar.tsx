@@ -21,11 +21,13 @@ import { useAuth } from "@clerk/react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store";
 import { CustomerMobileNavbar } from "./mobile-navbar";
+import { CommonLoader } from "@/components/common/Loader";
+import CustomerProfileDialog from "../profile/customer-profile-dialog";
 import CustomerWishlistDialog from "../wishlist/customer-wishlist-dialog";
 import { useCustomerWishlistStore } from "@/features/customer/wishlist/store";
 import { useCustomerProfileStore } from "@/features/customer/profile/store";
-import { CommonLoader } from "@/components/common/Loader";
-import CustomerProfileDialog from "../profile/customer-profile-dialog";
+import CustomerCartAndCheckoutDrawer from "../cart-and-checkout/cart-and-customer-drawer";
+import { useCustomerCartAndCheckoutStore } from "@/features/customer/cart-and-checkout/store";
 
 type NavItem = {
   label: string;
@@ -43,7 +45,7 @@ const shell =
   "mx-auto flex h-[72px] max-w-[1600px] items-center gap-3 px-4 sm:px-6 lg:px-8";
 
 const headerClass =
-  "sticky top-0 z-50 border-b border-border/70 bg-secondary/60 backdrop-blur-xl";
+  "sticky top-0 z-50 border-b border-border bg-secondary/80 backdrop-blur-xl";
 
 const textLink =
   "inline-flex h-10 items-center gap-2 rounded-xl px-3 text-[15px] font-medium text-foreground/90 transition hover:bg-white/5 hover:text-foreground";
@@ -109,16 +111,16 @@ export const CustomerNavbar = () => {
     (state) => state,
   );
 
-  //   const { setOpen, cart, loadCart } = useCustomerCartAndCheckoutStore(
-  //     (state) => state,
-  //   );
+  const { setOpen, cart, loadCart } = useCustomerCartAndCheckoutStore(
+    (state) => state,
+  );
 
   //   const { openOrders } = useCustomerOrdersStore((state) => state);
 
   useEffect(() => {
     if (!isLoaded || !isBootstrapped) return;
 
-    // void loadCart(Boolean(isSignedIn));
+    void loadCart(Boolean(isSignedIn));
 
     if (!isSignedIn) {
       clearWishlist();
@@ -134,7 +136,7 @@ export const CustomerNavbar = () => {
     isSignedIn,
     isLoaded,
     loadWishlist,
-    // loadCart,
+    loadCart,
   ]);
 
   const showSignInUi = isLoaded && isBootstrapped && isSignedIn;
@@ -213,12 +215,9 @@ export const CustomerNavbar = () => {
             <NavTextLink href="/sign-in" label="Login" icon={LogIn} />
           )}
 
-          <div
-            //  onClick={() => setOpen(true)}
-            className={iconLink}
-          >
+          <div onClick={() => setOpen(true)} className={iconLink}>
             <ShoppingCart className="h-4.5 w-4.5" />
-            <span className={cartBadge}>{/* {cart?.items?.length} */}0</span>
+            <span className={cartBadge}>{cart?.items?.length || 0}</span>
           </div>
         </nav>
 
@@ -227,7 +226,7 @@ export const CustomerNavbar = () => {
         {showSignInUi ? <CustomerWishlistDialog /> : null}
         {showSignInUi ? <CustomerProfileDialog /> : null}
         {/* {showSignInUi ? <CustomerOrdersDialog /> : null} */}
-        {/* <CustomerCartAndCheckoutDrawer /> */}
+        <CustomerCartAndCheckoutDrawer />
       </div>
     </header>
   );

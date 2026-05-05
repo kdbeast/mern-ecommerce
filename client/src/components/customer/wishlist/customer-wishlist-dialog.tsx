@@ -13,8 +13,7 @@ import { useCustomerWishlistStore } from "@/features/customer/wishlist/store";
 const dialogClass = "sm:max-w-xl";
 const contentClass = "space-y-4";
 const listClass = "space-y-3";
-const itemClass =
-  "flex items-start gap-3 border border-border/60 bg-card/80 p-3";
+const itemClass = "flex items-start gap-3 border border-border bg-card p-3";
 const imageClass = "h-20 w-16 shrink-0 object-cover";
 const noImageClass =
   "flex h-20 w-16 shrink-0 items-center justify-center bg-muted text-xs text-muted-foreground";
