@@ -118,7 +118,7 @@ customerCheckoutRouter.post(
       }
 
       const finalPrice = product.salePercentage
-        ? Math.round(product.price * (1 - product.salePercentage / 100) * 100)
+        ? Math.round(product.price * (1 - product.salePercentage / 100))
         : product.price;
 
       totalItems += cartItem.quantity;
@@ -157,9 +157,7 @@ customerCheckoutRouter.post(
       }
 
       appliedPromoCode = foundPromo.code;
-      discountAmount = Math.round(
-        subTotal * (foundPromo.percentage / 100) * 100,
-      );
+      discountAmount = Math.round(subTotal * (foundPromo.percentage / 100));
     }
     const totalAmount = Math.max(subTotal - discountAmount, 0);
 
@@ -188,26 +186,28 @@ customerCheckoutRouter.post(
       promoCode: appliedPromoCode,
       discountAmount,
       totalAmount,
-      paymentStatus: "paid",
+      paymentStatus: "pending",
       orderStatus: "placed",
       razorpayOrderId: razorpayOrder.id,
     });
 
-    res.status(200).json({
-      razorpay: {
-        keyId: process.env.RAZORPAY_KEY_ID,
-        orderId: razorpayOrder.id,
-        amount: razorpayOrder.amount,
-        currency: "INR",
-      },
-      order: {
-        _id: order._id,
-        totalItems: order.totalItems,
-        discountAmount: order.discountAmount,
-        totalAmount: order.totalAmount,
-      },
-      message: "Order created successfully",
-    });
+    res.status(200).json(
+      ok({
+        razorpay: {
+          keyId: process.env.RAZORPAY_KEY_ID,
+          orderId: razorpayOrder.id,
+          amount: razorpayOrder.amount,
+          currency: "INR",
+        },
+        order: {
+          _id: order._id,
+          totalItems: order.totalItems,
+          discountAmount: order.discountAmount,
+          totalAmount: order.totalAmount,
+        },
+        message: "Order created successfully",
+      }),
+    );
   }),
 );
 

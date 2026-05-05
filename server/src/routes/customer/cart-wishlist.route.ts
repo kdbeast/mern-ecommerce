@@ -48,25 +48,6 @@ const getCartResponse = async (userId: string) => {
 
   const cartItems = (cart?.items || []) as CartPreviewItem[];
 
-  const formatProduct = (product: ProductPreview) => {
-    const image =
-      product.images.find((img) => img.isCover)?.url ||
-      product.images[0]?.url ||
-      "";
-
-    const finalPrice = product.salePercentage
-      ? Math.round(product.price - product.price * product.salePercentage) / 100
-      : product.price;
-
-    return {
-      productId: String(product._id),
-      title: product.title,
-      brand: product.brand,
-      image,
-      finalPrice,
-    };
-  };
-
   const items = cartItems.flatMap((cartItem) => {
     if (!cartItem.product) return [];
 
@@ -80,12 +61,12 @@ const getCartResponse = async (userId: string) => {
     ];
   });
 
-  const totalQuantity = cartItems.reduce(
-    (total, item) => total + item.quantity,
-    0,
-  );
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
 
-  return { items, totalQuantity };
+  return {
+    items,
+    totalQuantity,
+  };
 };
 
 const getSelectedVariant = (

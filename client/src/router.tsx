@@ -19,6 +19,7 @@ import { RoleGuardLayout } from "./components/auth/RoleGuardLayout";
 import { PublicOnlyLayout } from "./components/auth/PublicOnlyLayout";
 
 import { createBrowserRouter } from "react-router";
+import CustomerOrderSuccessPage from "./pages/customer/order-success";
 
 export const router = createBrowserRouter([
   {
@@ -52,7 +53,12 @@ export const router = createBrowserRouter([
       },
       {
         element: <ProtectedLayout />,
-        children: [],
+        children: [
+          {
+            path: "order-success",
+            element: <CustomerOrderSuccessPage />,
+          },
+        ],
       },
     ],
   },

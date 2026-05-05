@@ -123,7 +123,7 @@ const waitForRazorpay = (timeOut = 4000): Promise<void> => {
 const GUEST_CART_KEY = "guest_cart_items";
 
 const readGuestItems = (): GuestCartItem[] => {
-  if (typeof window === undefined) return [];
+  if (typeof window === "undefined") return [];
 
   try {
     const items = JSON.parse(
@@ -142,13 +142,13 @@ const readGuestItems = (): GuestCartItem[] => {
 }
 
 const writeGuestItems = (items: GuestCartItem[]) => {
-  if (typeof window === undefined) return;
+  if (typeof window === "undefined") return;
 
   window.localStorage.setItem(GUEST_CART_KEY, JSON.stringify(items));
 }
 
 const clearGuestItems = () => {
-  if (typeof window === undefined) return;
+  if (typeof window === "undefined") return;
   window.localStorage.removeItem(GUEST_CART_KEY);
 }
 
