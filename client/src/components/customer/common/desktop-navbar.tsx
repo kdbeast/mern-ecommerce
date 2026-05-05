@@ -1,31 +1,33 @@
 import { useEffect } from "react";
 import {
   Heart,
+  User,
   LogIn,
+  Store,
   LogOut,
   ShoppingBag,
-  ShoppingBasket,
   ShoppingCart,
-  Store,
-  User,
+  ShoppingBasket,
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "react-router";
 import {
   DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuContent,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@clerk/react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store";
 import { CustomerMobileNavbar } from "./mobile-navbar";
 import { CommonLoader } from "@/components/common/Loader";
+import { useCustomerOrdersStore } from "@/features/orders/store";
+import CustomerOrdersDialog from "../orders/customer-order-dialog";
 import CustomerProfileDialog from "../profile/customer-profile-dialog";
 import CustomerWishlistDialog from "../wishlist/customer-wishlist-dialog";
-import { useCustomerWishlistStore } from "@/features/customer/wishlist/store";
 import { useCustomerProfileStore } from "@/features/customer/profile/store";
+import { useCustomerWishlistStore } from "@/features/customer/wishlist/store";
 import CustomerCartAndCheckoutDrawer from "../cart-and-checkout/cart-and-customer-drawer";
 import { useCustomerCartAndCheckoutStore } from "@/features/customer/cart-and-checkout/store";
 
@@ -90,7 +92,7 @@ const NavTextLink = ({
 }) => {
   return (
     <Link to={href} className={textLink}>
-      <Icon className="h-[18px] w-[18px]" />
+      <Icon className="h-4.5 w-4.5" />
       <span>{label}</span>
     </Link>
   );
@@ -115,7 +117,7 @@ export const CustomerNavbar = () => {
     (state) => state,
   );
 
-  //   const { openOrders } = useCustomerOrdersStore((state) => state);
+  const { openOrders } = useCustomerOrdersStore((state) => state);
 
   useEffect(() => {
     if (!isLoaded || !isBootstrapped) return;
@@ -169,7 +171,7 @@ export const CustomerNavbar = () => {
               className={iconLink}
               onClick={() => setWishlistOpen(true)}
             >
-              <Heart className="w-[20px] h-[20px]" />
+              <Heart className="w-5 h-5" />
               <span className={wishlistBadge}>{wishlistCount}</span>
             </button>
           ) : null}
@@ -195,7 +197,7 @@ export const CustomerNavbar = () => {
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
-                  // onClick={() => void openOrders()}
+                  onClick={() => void openOrders()}
                   className={dropdownItemLink}
                 >
                   <ShoppingBasket className="h-4 w-4" />
@@ -225,7 +227,7 @@ export const CustomerNavbar = () => {
 
         {showSignInUi ? <CustomerWishlistDialog /> : null}
         {showSignInUi ? <CustomerProfileDialog /> : null}
-        {/* {showSignInUi ? <CustomerOrdersDialog /> : null} */}
+        {showSignInUi ? <CustomerOrdersDialog /> : null}
         <CustomerCartAndCheckoutDrawer />
       </div>
     </header>

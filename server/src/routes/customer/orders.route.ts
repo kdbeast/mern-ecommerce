@@ -41,7 +41,7 @@ customerOrderRouter.get(
     res.json(
       ok({
         items: orders.map((orderItem) => ({
-          id: String(orderItem._id),
+          _id: String(orderItem._id),
           code: String(orderItem._id).slice(-8).toUpperCase(),
           totalAmount: orderItem.totalAmount,
           totalItems: orderItem.totalItems,
