@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useCustomerProfileStore } from "@/features/customer/profile/store";
-// import { useCustomerCartAndCheckoutStore } from "@/features/customer/cart-and-checkout/store";
+import { useCustomerCartAndCheckoutStore } from "@/features/customer/cart-and-checkout/store";
 
 const dialogClass =
   "max-h-[92vh] overflow-y-auto border-border bg-background sm:max-w-5xl";
@@ -68,7 +68,7 @@ function CustomerProfileDialog() {
     form,
   } = useCustomerProfileStore();
 
-  // const { points } = useCustomerCartAndCheckoutStore((state) => state);
+  const { points } = useCustomerCartAndCheckoutStore((state) => state);
 
   const { user } = useUser();
 
@@ -93,7 +93,7 @@ function CustomerProfileDialog() {
 
               <p className={pointsClass}>
                 Points:
-                {/* {points} */}100
+                {points}
               </p>
             </div>
           </section>
