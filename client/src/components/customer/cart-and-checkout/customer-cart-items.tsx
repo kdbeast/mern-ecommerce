@@ -47,8 +47,6 @@ function CustomerCartItems() {
   const { cart, setOpen, increase, decrease, remove } =
     useCustomerCartAndCheckoutStore((state) => state);
 
-    console.log(cart);
-
   return (
     <div className={wrapClass}>
       <div className={headClass}>

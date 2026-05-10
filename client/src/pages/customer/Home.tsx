@@ -134,7 +134,10 @@ export const HomePage = () => {
 
               <div className={categoryGridClass}>
                 {data.categories.slice(0, 4).map((categoryItem) => (
-                  <Link to={`/collections?category=${categoryItem._id}`}>
+                  <Link
+                    key={categoryItem._id}
+                    to={`/collections?category=${categoryItem._id}`}
+                  >
                     <Card className={categoryCardClass}>
                       <CardContent className={categoryContentClass}>
                         <div className={categoryIconWrapClass}>
@@ -167,7 +170,7 @@ export const HomePage = () => {
 
               <div className={couponGridClass}>
                 {data.coupons.slice(0, 4).map((coupon) => (
-                  <Card className={couponCardClass}>
+                  <Card key={coupon._id} className={couponCardClass}>
                     <CardContent className={couponContentClass}>
                       <div className={couponIconWrapClass}>
                         <TicketPercent className={couponIconClass} />
@@ -237,4 +240,4 @@ export const HomePage = () => {
       </div>
     </div>
   );
-}
+};
