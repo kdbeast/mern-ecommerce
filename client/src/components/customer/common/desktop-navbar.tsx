@@ -144,7 +144,7 @@ export const CustomerNavbar = () => {
   const showSignInUi = isLoaded && isBootstrapped && isSignedIn;
   const wishlistCount = wishlistItems.length;
 
-  if (!isSignedIn) {
+  if (!isLoaded || !isBootstrapped) {
     return <CommonLoader />;
   }
 
